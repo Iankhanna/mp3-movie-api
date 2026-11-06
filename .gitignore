@@ -18,3 +18,7 @@ __pycache__/
 # Generated files
 output/
 *.log
+data/
+venv/
+__pycache__/
+.pytest_cache/
