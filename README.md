@@ -77,3 +77,45 @@ python -m pytest tests -v
 The test suite covers API endpoints, input validation, database persistence, data processing, and caching.
 
 All 22 automated tests passed during local testing.
+
+
+## Example Processing Request
+
+After uploading `fixtures/sample_movies.csv`, send POST `/movies/process` with:
+
+```json
+{
+  "validation": {
+    "required_columns": ["title", "release_year", "rating", "genre"],
+    "numeric_columns": ["release_year", "rating"]
+  },
+  "processing": {
+    "remove_duplicates": true,
+    "missing": {
+      "enabled": true,
+      "axis": "rows"
+    },
+    "outliers": {
+      "enabled": true,
+      "columns": ["rating"],
+      "method": "iqr",
+      "threshold": 1.5
+    }
+  }
+}
+```
+
+Expected response:
+
+```json
+{
+  "validation_rows_removed": 0,
+  "cleaning_report": {
+    "rows_before": 20,
+    "rows_after": 16,
+    "rows_removed": 4,
+    "columns_before": 4,
+    "columns_after": 4,
+    "columns_removed": 0
+  }
+}

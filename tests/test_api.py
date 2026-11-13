@@ -334,25 +334,6 @@ def test_cache_and_processing(client, uploaded_movies, processing_body):
     assert main.cache.get(100) == updated_data
 
 def test_cache_hit_skips_database(client, uploaded_movies, monkeypatch):
-    first_response = client.get("/movies?limit=100")
-
-    assert first_response.status_code == 200
-    assert first_response.json()["total_rows"] == 20
-
-    import main
-
-    def fail_if_called(*args, **kwargs):
-        raise AssertionError("Database should not be queried on cache hit")
-
-    monkeypatch.setattr(main.storage, "select_columns", fail_if_called)
-    monkeypatch.setattr(main.storage, "count_movies", fail_if_called)
-
-    second_response = client.get("/movies?limit=100")
-
-    assert second_response.status_code == 200
-    assert second_response.json() == first_response.json()
-
-def test_cache_hit_skips_database(client, uploaded_movies, monkeypatch):
     import main
 
     first_response = client.get("/movies?limit=100")
